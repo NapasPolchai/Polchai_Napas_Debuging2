@@ -11,10 +11,11 @@ let theButtons = document.querySelectorAll("#buttonHolder img"),
 	puzzleBoard = document.querySelector(".puzzle-board"),
 	puzzlePieces = document.querySelectorAll(".puzzle-pieces img"),
 	dropZones = document.querySelectorAll('.drop-zone'),
+	
 	// store the dragged piece in a global variable
 	// because we need it in the handleDrop function
 	draggedPiece;
-
+let resetButton = document.querySelector("#resetBut");
 // step 3
 // functionality always goes in the middle -> how do we want
 // the app to behave?
@@ -26,6 +27,7 @@ function changeBGImage() {
 
 	// bug fix #2 should go here. it's at most 3 lines of JS code.
 	puzzleBoard.style.backgroundImage = `url(images/backGround${this.id}.jpg)`;
+	resetPuzzle();
 }
 
 function handleStartDrag() { 
@@ -54,6 +56,25 @@ function handleDrop(e) {
     }
 }
 
+// Define the resetPuzzle function
+function resetPuzzle() {
+    // Reparent puzzle pieces back to the drag zone
+    puzzlePieces.forEach(piece => {
+        // Check if the piece is currently in a drop zone
+        if (piece.parentElement.classList.contains('drop-zone')) {
+            // Reparent the piece back to the puzzle board
+            puzzleBoard.appendChild(piece);
+        }
+    });
+
+	puzzlePieces.forEach(piece => document.querySelector(".puzzle-pieces").appendChild(piece));
+
+    // Clear any background image set on the puzzle board
+    dropZones.forEach(zone => {
+        zone.style.backgroundImage = '';
+    });
+}
+
 // step 2
 // event handling always goes at the bottom => 
 // how do we want users to interact with our app
@@ -73,3 +94,5 @@ dropZones.forEach(zone => zone.addEventListener("dragover", handleDragOver));
 
 // add the drop event handling
 dropZones.forEach(zone => zone.addEventListener("drop", handleDrop));
+
+resetButton.addEventListener("click", resetPuzzle);
